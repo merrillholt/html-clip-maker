@@ -1,0 +1,18 @@
+html_clip_maker/
+├── __init__.py
+├── main.py
+├── modules/
+│   ├── __init__.py
+│   ├── clipboard.py      # Clipboard handling (X11/Wayland)
+│   ├── markdown.py       # Markdown processing
+│   ├── math_processor.py # Math notation handling
+│   ├── html_generator.py # HTML template and generation
+│   └── config.py         # Configuration and constants
+├── templates/
+│   └── base.html        # HTML template
+└── tests/
+    ├── __init__.py
+    ├── test_clipboard.py
+    ├── test_markdown.py
+    ├── test_math.py
+    └── test_html.py

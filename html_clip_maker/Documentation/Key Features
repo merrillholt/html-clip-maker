@@ -1,0 +1,32 @@
+Key features:
+
+1. Command Line Interface:
+   - Filename argument for output
+   - Optional custom CSS styling
+   - Debug mode option
+
+2. Process Flow:
+   ```
+   Clipboard → Math Processing → Markdown Processing → HTML Generation → Output
+   ```
+
+3. Error Handling:
+   - Comprehensive logging
+   - Graceful error handling
+   - Debug mode for troubleshooting
+
+4. Customization:
+   - Support for custom CSS
+   - Configurable through command line
+   - Extensible design
+
+Usage Example:
+```bash
+# Basic usage
+python -m html_clip_maker output_name
+
+# With custom styles
+python -m html_clip_maker output_name --style custom.css
+
+# Debug mode
+python -m html_clip_maker output_name --debug

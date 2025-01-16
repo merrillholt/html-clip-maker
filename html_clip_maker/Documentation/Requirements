@@ -1,0 +1,24 @@
+"""
+HTML Clip Maker - Version 1.0.0
+Converts clipboard content with markdown and math notation to styled HTML
+
+Requirements:
+1. Handle clipboard content (both X11 and Wayland)
+2. Process markdown formatting:
+   - Headers (# to ####)
+   - Lists (ordered and unordered)
+   - Bold/Italic/Strikethrough
+   - Code blocks with syntax highlighting
+   - Blockquotes
+   - Links
+3. Process math notation:
+   - Inline math ($...$)
+   - Display math ($$...$$, \[...\])
+   - Support for matrices, equations, etc.
+4. Generate HTML with:
+   - MathJax support
+   - Highlight.js for code
+   - Custom styling
+   - Font customization
+5. Maintain indentation and spacing
+"""

@@ -1,2 +1,362 @@
 #!/bin/bash
 
+# Embedded HTML template with Highlight.js
+cat << 'EOF' > template.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><!-- INSERT TITLE HERE --></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <style>
+        body {
+            text-indent: 20px;
+        }
+        mjx-container {
+            text-align: left !important;
+        }
+        mjx-container.display {
+            padding-left: 20px;
+        }
+        .indent-h1, h1 {
+            margin-left: 0;
+        }
+        .indent-h2, h2 {
+            margin-left: 20px;
+        }
+        .indent-h3, h3 {
+            margin-left: 40px;
+        }
+        .indent-h4, h4 {
+            margin-left: 60px;
+        }
+        pre {
+            white-space: pre-wrap;
+        }
+        .content-preserve {
+            white-space: pre-wrap;
+        }
+    </style>
+
+    <script>
+        MathJax = {
+            tex: {
+                packages: ['base', 'ams', 'newcommand', 'configmacros'],
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                macros: {
+                    require: ['\\RequirePackage{#1}', 1]
+                }
+            },
+            loader: {
+                load: ['[tex]/ams', '[tex]/newcommand', '[tex]/configmacros']
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            options: {
+                renderActions: {
+                    addMenu: []
+                },
+                skipHtmlTags: ["script", "style", "textarea", "pre", "code"],
+                includeHtmlTags: {br: "\n", wbr: "", "#comment": ""}
+            }
+        };
+    </script>
+
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+</head>
+<body>
+
+    <div id="content">
+        <!-- INSERT H1 HERE -->
+        <!-- INSERT CONTENT HERE -->
+    </div>
+
+    <script type="text/javascript">
+        function renderMath() {
+            MathJax.typeset().then(() => {
+                document.querySelectorAll("mjx-container").forEach(container => {
+                    if (container.parentNode.tagName === "P") {
+                        container.classList.add("inline");
+                    } else {
+                        container.classList.add("display");
+                    }
+                });
+
+                // Add indentation for display mode LaTeX
+                document.querySelectorAll("mjx-container.display").forEach(container => {
+                    const parent = container.parentElement;
+                    if (parent && parent.tagName === "DIV" && parent.classList.contains("content-preserve")) {
+                        let indentLevel = 0;
+                        let currentClass = parent.className;
+                        while (currentClass.includes(`indent-h${parseInt(currentClass.split('-')[1]) + 1}`)) {
+                            indentLevel++;
+                            currentClass = currentClass.replace(`indent-h${parseInt(currentClass.split('-')[1]) + 1}`, '');
+                        }
+                        container.style.marginLeft = `${indentLevel * 20}px`;
+                    }
+                });
+            }).catch(function (err) {
+                console.error(err.message);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMath();
+        });
+    </script>
+</body>
+</html>
+EOF
+
+set -euo pipefail
+
+VERSION="1.0.3"
+
+# Function to handle errors and cleanup
+cleanup() {
+    local exit_code=$?
+    echo "An error occurred. Exiting with status $exit_code."
+    rm -f "$temp_file" "${temp_file}_cleaned" "${temp_file}_math" "${temp_file}_processed" "${temp_file}_final" "${temp_file}_final2" template.html
+    exit $exit_code
+}
+trap cleanup EXIT
+
+# Function to log errors
+log_error() {
+    local message="$1"
+    echo "ERROR: $message" >&2
+}
+
+# Check if the correct number of arguments is provided
+if [[ "$#" -ne 1 ]]; then
+    log_error "Usage: $0 <filename>"
+    exit 1
+fi
+
+filename="$1"
+
+# Set input and output file names
+input_file="${filename}.txt"
+output_file="${filename}.html"
+
+# Detect whether the current session is Wayland or X11
+if [[ "${XDG_SESSION_TYPE:-}" == "wayland" ]]; then
+    if ! command -v wl-copy &> /dev/null || ! command -v wl-paste &> /dev/null; then
+        log_error "wl-clipboard is not installed. Please install it using your package manager."
+        exit 1
+    fi
+    clipboard_content=$(wl-paste)
+elif [[ "${XDG_SESSION_TYPE:-}" == "x11" ]]; then
+    if ! command -v xclip &> /dev/null; then
+        log_error "xclip is not installed. Please install it using your package manager."
+        exit 1
+    fi
+    clipboard_content=$(xclip -selection clipboard -o)
+else
+    log_error "Unsupported session type: ${XDG_SESSION_TYPE:-}"
+    exit 1
+fi
+
+# Check if clipboard is empty
+if [[ -z "$clipboard_content" ]]; then
+    log_error "Clipboard is empty."
+    exit 1
+fi
+
+# Write clipboard content to input file
+echo "$clipboard_content" > "$input_file"
+
+# Temporary file to store intermediate results
+temp_file=$(mktemp)
+
+# Extract title and clean up content
+title=$(head -n 1 "$input_file")
+title_words=$(echo "$title" | awk '{print $1, $2, $3}')
+tail -n +2 "$input_file" > "$temp_file"
+
+# Function to process math blocks
+process_math_blocks() {
+    awk '
+    BEGIN {
+        in_math = 0
+        math_content = ""
+        math_delim = ""
+        leading_spaces = ""
+        list_indent = ""
+    }
+    function get_line_prefix(line) {
+        if (match(line, /^([ \t]*[0-9]+\.[ \t]+|[ \t]*>[ \t]*|[ \t]+)/)) {
+            list_indent = substr(line, RSTART, RLENGTH)
+            leading_spaces = substr(line, 1, RSTART - 1)
+            return 1
+        }
+        list_indent = ""
+        if (match(line, /^[ \t]*/)) {
+            leading_spaces = substr(line, RSTART, RLENGTH)
+        }
+        return 0
+    }
+    function is_delimiter(line) {
+        if (match(line, /^[ \t]*(\$\$|\\\[|\\\])[ \t]*$/)) {
+            return 1
+        }
+        return 0
+    }
+    function get_delimiter_type(line) {
+        if (line ~ /\$\$/) return "$$"
+        if (line ~ /\\\[/) return "\\["
+        if (line ~ /\\\]/) return "\\]"
+        return ""
+    }
+    function clean_math_content() {
+        split(math_content, lines, "\n")
+        result = ""
+        for (i = 1; i <= length(lines); i++) {
+            if (list_indent != "") {
+                sub("^" list_indent, "", lines[i])
+            }
+            gsub(/^[ \t]+/, "", lines[i])
+            gsub(/[ \t]+$/, "", lines[i])
+            if (lines[i] != "") {
+                if (result == "") {
+                    result = lines[i]
+                } else {
+                    result = result " \\\\ " lines[i]
+                }
+            }
+        }
+        return result
+    }
+    function output_math_block() {
+        processed_content = clean_math_content()
+        prefix = leading_spaces list_indent
+        if (math_delim == "$$") {
+            printf "%s$$ %s $$\n", prefix, processed_content
+        } else if (math_delim == "\\[") {
+            printf "%s\\[ %s \\]\n", prefix, processed_content
+        }
+        math_content = ""
+        in_math = 0
+        leading_spaces = ""
+        list_indent = ""
+    }
+    {
+        line = $0
+        get_line_prefix(line)
+        if (!in_math && is_delimiter(line)) {
+            in_math = 1
+            math_delim = get_delimiter_type(line)
+        } else if (in_math && is_delimiter(line)) {
+            output_math_block()
+        } else if (in_math) {
+            if (math_content == "") {
+                math_content = line
+            } else {
+                math_content = math_content "\n" line
+            }
+        } else {
+            print line
+        }
+    }
+    END {
+        if (in_math) {
+            output_math_block()
+        }
+    }' "$1" > "$2"
+}
+
+# Replace blank lines and process Markdown syntax
+sed '/^$/s/^$/<br>/g' "$temp_file" > "${temp_file}_cleaned"
+
+# Process math blocks
+process_math_blocks "${temp_file}_cleaned" "${temp_file}_math"
+
+# Process markdown elements
+sed -E '
+    s/^# (.*)$/<h1>\1<\/h1>/
+    s/^## (.*)$/<h2>\1<\/h2>/
+    s/^### (.*)$/<h3>\1<\/h3>/
+    s/^#### (.*)$/<h4>\1<\/h4>/
+    s/^> (.*)$/<blockquote>\1<\/blockquote>/
+    s/^([0-9]+\.) (.*)$/<ol start="\1"><li>\2<\/li><\/ol>/
+    s/^[-*] (.*)$/<ul><li>\1<\/li><\/ul>/
+' "${temp_file}_math" > "${temp_file}_processed"
+
+# Process inline elements
+sed -E -i '
+    s/\*\*\*([^*]+)\*\*\*/<strong><em>\1<\/em><\/strong>/g
+    s/\*\*([^*]+)\*\*/<strong>\1<\/strong>/g
+    s/\*([^*]+)\*/<em>\1<\/em>/g
+    s/_([^_]+)_/<em>\1<\/em>/g
+    s/~~([^~]+)~~/<del>\1<\/del>/g
+    s/`([^`]+)`/<code>\1<\/code>/g
+' "${temp_file}_processed"
+
+# Process URLs
+sed -E -i 's_(http[s]?://[^\s<]*)_<a href="\1">\1</a>_g' "${temp_file}_processed"
+
+# Process consecutive list items
+awk '
+BEGIN {
+    in_list = 0
+    list_type = ""
+}
+{
+    if ($0 ~ /<\/?[ou]l>/) {
+        if (in_list) {
+            if ($0 ~ "<" list_type) {
+                gsub("<" list_type ">[[:space:]]*", "")
+                gsub("[[:space:]]*<\\/" list_type ">", "")
+                print $0
+            } else {
+                print "</" list_type ">"
+                print $0
+                in_list = ($0 ~ /<[ou]l>/)
+                list_type = in_list ? ($0 ~ /<ul>/ ? "ul" : "ol") : ""
+            }
+        } else {
+            print $0
+            in_list = 1
+            list_type = ($0 ~ /<ul>/ ? "ul" : "ol")
+        }
+    } else {
+        if (in_list) {
+            print "</" list_type ">"
+            in_list = 0
+            list_type = ""
+        }
+        print $0
+    }
+}
+END {
+    if (in_list) print "</" list_type ">"
+}' "${temp_file}_processed" > "${temp_file}_final"
+
+# Add div classes for content preservation
+awk '
+BEGIN {
+    indent_class = "indent-h1"
+}
+{
+    if ($0 ~ /^<h[1-4]>/) {
+        print $0
+    } else {
+        print "<div class=\"" indent_class " content-preserve\">" $0 "</div>"
+    }
+}' "${temp_file}_final" > "${temp_file}_final2"
+
+# Insert content into template
+sed -e "s/<!-- INSERT TITLE HERE -->/$title_words/" \
+    -e "s|<!-- INSERT H1 HERE -->|<h1>$title</h1>|" \
+    -e "/<!-- INSERT CONTENT HERE -->/ {
+        r ${temp_file}_final2
+        d
+    }" template.html > "$output_file"

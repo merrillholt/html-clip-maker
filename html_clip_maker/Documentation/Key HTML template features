@@ -1,0 +1,37 @@
+Key features of this template:
+
+1. Responsive Design:
+   - Mobile-friendly viewport
+   - Proper spacing and margins
+   - Responsive font sizes
+
+2. Typography:
+   - Custom fonts with fallbacks
+   - Consistent vertical rhythm
+   - Proper text hierarchy
+
+3. Math Rendering:
+   - MathJax configuration
+   - Proper alignment and spacing
+   - Support for inline and display math
+
+4. Code Blocks:
+   - Syntax highlighting
+   - Proper formatting
+   - Scrollable overflow
+
+5. Dark Mode Support:
+   - Automatic dark mode detection
+   - Color scheme variables
+   - Consistent contrast
+
+6. Print Styles:
+   - Optimized for printing
+   - Removed unnecessary elements
+   - Adjusted font sizes
+
+Would you like me to:
+1. Add more customization options?
+2. Add additional features?
+3. Show example custom styles?
+4. Explain any specific part in detail?
