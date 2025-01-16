@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><!-- INSERT TITLE HERE --></title>
+    
+    <!-- Enhanced syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    
+    <!-- Enhanced MathJax configuration -->
+    <script>
+        MathJax = {
+            tex: {
+                packages: ['base', 'ams', 'newcommand', 'configmacros', 'physics'],
+                inlineMath: [['$', '$'], ['\(', '\)']],
+                displayMath: [['94159', '94159'], ['\[', '\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                tags: 'ams',
+                macros: {
+                    require: ['\RequirePackage{#1}', 1],
+                    vec: ['\boldsymbol{#1}', 1],
+                    mat: ['\mathbf{#1}', 1]
+                }
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 1.1
+            },
+            options: {
+                enableMenu: true,
+                menuOptions: {
+                    settings: {
+                        zoom: 'Click'
+                    }
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+    
+    <!-- Enhanced styling -->
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+        }
+        pre {
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            padding: 16px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        }
+        mjx-container {
+            text-align: left !important;
+            margin: 1em 0;
+        }
+        .theorem {
+            margin: 1em 0;
+            padding: 1em;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        .version-info {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <!-- INSERT H1 HERE -->
+        <!-- INSERT CONTENT HERE -->
+    </div>
+    
+    <div class="version-info">
+        Version: <!-- INSERT VERSION HERE -->
+    </div>
+
+    <script>
+        hljs.highlightAll();
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            MathJax.typeset().then(() => {
+                document.querySelectorAll("mjx-container").forEach(container => {
+                    if (container.parentNode.tagName === "P") {
+                        container.classList.add("inline");
+                    } else {
+                        container.classList.add("display");
+                    }
+                });
+            }).catch(err => console.error(err.message));
+        });
+    </script>
+</body>
+</html>

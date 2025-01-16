@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title># Math and</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <style>
+        body {
+            text-indent: 20px;
+        }
+        mjx-container {
+            text-align: left !important;
+        }
+        mjx-container.display {
+            padding-left: 20px;
+        }
+        .indent-h1, h1 {
+            margin-left: 0;
+        }
+        .indent-h2, h2 {
+            margin-left: 20px;
+        }
+        .indent-h3, h3 {
+            margin-left: 40px;
+        }
+        .indent-h4, h4 {
+            margin-left: 60px;
+        }
+        pre {
+            white-space: pre-wrap;
+        }
+        .content-preserve {
+            white-space: pre-wrap;
+        }
+    </style>
+
+    <script>
+        MathJax = {
+            tex: {
+                packages: ['base', 'ams', 'newcommand', 'configmacros'],
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                macros: {
+                    require: ['\\RequirePackage{#1}', 1]
+                }
+            },
+            loader: {
+                load: ['[tex]/ams', '[tex]/newcommand', '[tex]/configmacros']
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            options: {
+                renderActions: {
+                    addMenu: []
+                },
+                skipHtmlTags: ["script", "style", "textarea", "pre", "code"],
+                includeHtmlTags: {br: "\n", wbr: "", "#comment": ""}
+            }
+        };
+    </script>
+
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+</head>
+<body>
+
+    <div id="content">
+        <h1># Math and Markdown Test Document (v1.0.9)</h1>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">This document tests all features of the HTML clip maker script, including math notation, markdown formatting, and mixed content.</div>
+<div class="indent-h1 content-preserve"><br></div>
+<h2>Version Information</h2>
+<div class="indent-h1 content-preserve"><ul><li>Test Document Version: 1.0.1</li></ul></div>
+<div class="indent-h1 content-preserve"><li>Last Updated: 2024-01-19</li></div>
+<div class="indent-h1 content-preserve"><li>Compatible with: make<em>html</em>clip v1.0</li></div>
+<div class="indent-h1 content-preserve"><li>Changes: Removed math delimiters from comments and documentation</li></div>
+<div class="indent-h1 content-preserve"></ul></div>
+<div class="indent-h1 content-preserve"><br></div>
+<h2>1. Basic Markdown</h2>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>1.1 Text Formatting</h3>
+<div class="indent-h1 content-preserve">Regular text</div>
+<div class="indent-h1 content-preserve"><strong>Bold text</strong></div>
+<div class="indent-h1 content-preserve"><em>Italic text</em></div>
+<div class="indent-h1 content-preserve"><strong><em>Bold and italic text</em></strong></div>
+<div class="indent-h1 content-preserve"><del>Strikethrough text</del></div>
+<div class="indent-h1 content-preserve"><code>Inline code</code></div>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>1.2 Lists</h3>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">Unordered list:</div>
+<div class="indent-h1 content-preserve"><ul><li>Item 1</li></ul></div>
+<div class="indent-h1 content-preserve"><li>Item 2</li></div>
+<div class="indent-h1 content-preserve"></ul></div>
+<div class="indent-h1 content-preserve">  - Nested item 2.1</div>
+<div class="indent-h1 content-preserve">  - Nested item 2.2</div>
+<div class="indent-h1 content-preserve"><ul><li>Item 3</li></ul></div>
+<div class="indent-h1 content-preserve"></ul></div>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">Ordered list:</div>
+<div class="indent-h1 content-preserve"><ol start="1."><li>First item</li></ol></div>
+<div class="indent-h1 content-preserve"><ol start="2."><li>Second item</li></div>
+<div class="indent-h1 content-preserve"></ol></div>
+<div class="indent-h1 content-preserve">   1. Nested item 2.1</div>
+<div class="indent-h1 content-preserve">   2. Nested item 2.2</div>
+<div class="indent-h1 content-preserve"><ol start="3."><li>Third item</li></ol></div>
+<div class="indent-h1 content-preserve"></ol></div>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>1.3 Blockquotes</h3>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve"><blockquote>Single line blockquote</blockquote></div>
+<div class="indent-h1 content-preserve">></div>
+<div class="indent-h1 content-preserve"><blockquote>Multi-line blockquote</blockquote></div>
+<div class="indent-h1 content-preserve"><blockquote>with multiple paragraphs</blockquote></div>
+<div class="indent-h1 content-preserve">></div>
+<div class="indent-h1 content-preserve"><blockquote>- Can contain lists</blockquote></div>
+<div class="indent-h1 content-preserve"><blockquote>- And other elements</blockquote></div>
+<div class="indent-h1 content-preserve"><br></div>
+<h2>2. Math Notation Tests</h2>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>2.1 Inline Math Tests</h3>
+<div class="indent-h1 content-preserve">Basic inline test:</div>
+<div class="indent-h1 content-preserve">$x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$</div>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">Mixed format tests:</div>
+<div class="indent-h1 content-preserve"><strong>Bold with math: $E=mc^2$</strong></div>
+<div class="indent-h1 content-preserve"><em>Italic with math: $\pi r^2$</em></div>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>2.2 Display Math with $$ Tests</h3>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">Basic equation:</div>
+<div class="indent-h1 content-preserve">$$ f(x) = ax^2 + bx + c $$</div>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">Matrix test:</div>
+<div class="indent-h1 content-preserve">$$ \begin{bmatrix} \\ a & b & c \\ \\ d & e & f \\ \\ g & h & i \\ \end{bmatrix} $$</div>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">Aligned equations test:</div>
+<div class="indent-h1 content-preserve">$$ \begin{align} \\ x &= a + b \\ \\ y &= c + d \\ \\ z &= e + f \\ \end{align} $$</div>
+<h3>2.3 Display Math with Bracket Tests</h3>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">Integration test:</div>
+<div class="indent-h1 content-preserve">\[ \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \]</div>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">Rotation matrix test:</div>
+<div class="indent-h1 content-preserve">\[ \begin{pmatrix} \\ \cos\theta & -\sin\theta \\ \\ \sin\theta & \cos\theta \\ \end{pmatrix} \]</div>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">System of equations test:</div>
+<div class="indent-h1 content-preserve">\[ \begin{cases} \\ x + y + z = 1 \\ \\ 2x - y + z = 3 \\ \\ x + 2y - z = 2 \\ \end{cases} \]</div>
+<div class="indent-h1 content-preserve"><br></div>
+<h2>3. Complex Examples</h2>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>3.1 Math in Lists</h3>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve"><ol start="1."><li>Limit test:</li></ol></div>
+<div class="indent-h1 content-preserve"></ol></div>
+<div class="indent-h1 content-preserve">   $$ \lim_{x \to 0} \frac{\sin x}{x} = 1 $$</div>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve"><ol start="2."><li>Complex integral test:</li></ol></div>
+<div class="indent-h1 content-preserve"></ol></div>
+<div class="indent-h1 content-preserve">   \[ \oint_C \frac{dz}{z} = 2\pi i \]</div>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>3.2 Math in Blockquotes</h3>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve"><blockquote>Wave equation test:</blockquote></div>
+<div class="indent-h1 content-preserve"><blockquote>$$</blockquote></div>
+<div class="indent-h1 content-preserve"><blockquote>\frac{\partial^2 u}{\partial t^2} = c^2\nabla^2u</blockquote></div>
+<div class="indent-h1 content-preserve"><blockquote>$$</blockquote></div>
+<div class="indent-h1 content-preserve"><blockquote>Following blockquote text</blockquote></div>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>3.3 Mixed Content</h3>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">Here's some code with comments about circle area formula:</div>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">```python</div>
+<div class="indent-h1 content-preserve">def circle_area(radius):</div>
+<div class="indent-h1 content-preserve">    """Calculate circle area</div>
+<div class="indent-h1 content-preserve">    Area formula uses pi times radius squared</div>
+<div class="indent-h1 content-preserve">    """</div>
+<div class="indent-h1 content-preserve">    return math.pi <em> radius </em>* 2</div>
+<div class="indent-h1 content-preserve">```</div>
+<div class="indent-h1 content-preserve"><br></div>
+<h2>4. Advanced Mathematics</h2>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>4.1 Commutative Diagram Test</h3>
+<div class="indent-h1 content-preserve">$$ \require{AMScd} \\ \begin{CD} \\ A @>f>> B \\ \\ @VgVV @VVhV \\ \\ C @>>j> D \\ \end{CD} $$</div>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>4.2 Complex Mathematical Structures Test</h3>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve">Maxwell's equations test:</div>
+<div class="indent-h1 content-preserve">\[ \begin{align} \\ \nabla \cdot \mathbf{E} &= \frac{\rho}{\epsilon<em>0} \\ \\ \nabla \cdot \mathbf{B} &= 0 \\ \\ \nabla \times \mathbf{E} &= -\frac{\partial \mathbf{B}}{\partial t} \\ \\ \nabla \times \mathbf{B} &= \mu</em>0\mathbf{J} + \mu<em>0\epsilon</em>0\frac{\partial \mathbf{E}}{\partial t} \\ \end{align} \]</div>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>4.3 Chemical Equation Test</h3>
+<div class="indent-h1 content-preserve">$$ \ce{CO2 + H2O <=> H2CO3 <=> H+ + HCO3-} $$</div>
+<div class="indent-h1 content-preserve"><br></div>
+<h2>5. Edge Cases</h2>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>5.1 Nested Formatting Tests</h3>
+<div class="indent-h1 content-preserve">Nested bold italic with math: <strong><em>Test with $\frac{1}{2}$ fraction</em></strong></div>
+<div class="indent-h1 content-preserve">Bold with nested elements: *<em>Test with </em>italic<em> and $\int f(x)dx$ integral</em>*</div>
+<div class="indent-h1 content-preserve"><blockquote>Blockquote with nested elements: <strong>bold</strong>, <em>italic</em>, and sum $\sum_{i=1}^n i$</blockquote></div>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>5.2 Complex List Structure Tests</h3>
+<div class="indent-h1 content-preserve"><br></div>
+<div class="indent-h1 content-preserve"><ol start="1."><li>System test:</li></ol></div>
+<div class="indent-h1 content-preserve"></ol></div>
+<div class="indent-h1 content-preserve">   $$ \begin{cases} \\ x + y = 1 \\ \\ x - y = 0 \\ \end{cases} $$</div>
+<div class="indent-h1 content-preserve">   - Sublist item</div>
+<div class="indent-h1 content-preserve">   - Determinant test:</div>
+<div class="indent-h1 content-preserve">     \[ \det\begin{pmatrix} \\ a & b \\ \\ c & d \\ \end{pmatrix} = ad - bc \]</div>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>5.3 Special Characters Test</h3>
+<div class="indent-h1 content-preserve">$$ \begin{align<em>} \\ \alpha &\rightarrow \beta \\ \\ \gamma &\mapsto \delta \\ \\ \epsilon &\leftrightarrow \zeta \\ \end{align</em>} $$</div>
+<div class="indent-h1 content-preserve"><br></div>
+<h2>6. Compatibility Tests</h2>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>6.1 URLs and Links</h3>
+<div class="indent-h1 content-preserve">Visit [MathJax](<a href="https://www.mathjax.org/) for more information.">https://www.mathjax.org/) for more information.</a></div>
+<div class="indent-h1 content-preserve">Raw URL: <a href="https://www.mathjax.org/">https://www.mathjax.org/</a></div>
+<div class="indent-h1 content-preserve"><br></div>
+<h3>6.2 Code and Math Mixed</h3>
+<div class="indent-h1 content-preserve">```javascript</div>
+<div class="indent-h1 content-preserve">// Calculate energy using mass times light speed squared</div>
+<div class="indent-h1 content-preserve">const energy = mass * Math.pow(SPEED<em>OF</em>LIGHT, 2);</div>
+<div class="indent-h1 content-preserve">```markdown</div>
+<h3>6.3 Table Tests</h3>
+<div class="indent-h1 content-preserve">| Expression | Mathematical Form | Description |</div>
+<div class="indent-h1 content-preserve">|------------|------------------|-------------|</div>
+<div class="indent-h1 content-preserve">| Area | $\pi r^2$ | Circle area |</div>
+<div class="indent-h1 content-preserve">| Volume | $\frac{4}{3}\pi r^3$ | Sphere volume |</div>
+    </div>
+
+    <script type="text/javascript">
+        function renderMath() {
+            MathJax.typeset().then(() => {
+                document.querySelectorAll("mjx-container").forEach(container => {
+                    if (container.parentNode.tagName === "P") {
+                        container.classList.add("inline");
+                    } else {
+                        container.classList.add("display");
+                    }
+                });
+
+                // Add indentation for display mode LaTeX
+                document.querySelectorAll("mjx-container.display").forEach(container => {
+                    const parent = container.parentElement;
+                    if (parent && parent.tagName === "DIV" && parent.classList.contains("content-preserve")) {
+                        let indentLevel = 0;
+                        let currentClass = parent.className;
+                        while (currentClass.includes(`indent-h${parseInt(currentClass.split('-')[1]) + 1}`)) {
+                            indentLevel++;
+                            currentClass = currentClass.replace(`indent-h${parseInt(currentClass.split('-')[1]) + 1}`, '');
+                        }
+                        container.style.marginLeft = `${indentLevel * 20}px`;
+                    }
+                });
+            }).catch(function (err) {
+                console.error(err.message);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMath();
+        });
+    </script>
+</body>
+</html>

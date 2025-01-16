@@ -1,0 +1,272 @@
+#!/bin/bash
+
+# Embedded HTML template with Highlight.js
+cat << 'EOF' > template.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><!-- INSERT TITLE HERE --></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <style>
+        body {
+            text-indent: 20px;
+        }
+        mjx-container {
+            text-align: left !important;
+        }
+        mjx-container.display {
+            padding-left: 20px;
+        }
+        .indent-h1, h1 {
+            margin-left: 0;
+        }
+        .indent-h2, h2 {
+            margin-left: 20px;
+        }
+        .indent-h3, h3 {
+            margin-left: 40px;
+        }
+        .indent-h4, h4 {
+            margin-left: 60px;
+        }
+        pre {
+            white-space: pre-wrap;
+        }
+        .content-preserve {
+            white-space: pre-wrap;
+        }
+    </style>
+
+    <script>
+        MathJax = {
+            tex: {
+                packages: ['base', 'ams', 'newcommand', 'configmacros'],
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                macros: {
+                    require: ['\\RequirePackage{#1}', 1]
+                }
+            },
+            loader: {
+                load: ['[tex]/ams', '[tex]/newcommand', '[tex]/configmacros']
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            options: {
+                renderActions: {
+                    addMenu: []
+                },
+                skipHtmlTags: ["script", "style", "textarea", "pre", "code"],
+                includeHtmlTags: {br: "\n", wbr: "", "#comment": ""}
+            }
+        };
+    </script>
+
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+</head>
+<body>
+
+    <div id="content">
+        <!-- INSERT H1 HERE -->
+        <!-- INSERT CONTENT HERE -->
+    </div>
+
+    <script type="text/javascript">
+        function renderMath() {
+            MathJax.typeset().then(() => {
+                document.querySelectorAll("mjx-container").forEach(container => {
+                    if (container.parentNode.tagName === "P") {
+                        container.classList.add("inline");
+                    } else {
+                        container.classList.add("display");
+                    }
+                });
+
+                // Add indentation for display mode LaTeX
+                document.querySelectorAll("mjx-container.display").forEach(container => {
+                    const parent = container.parentElement;
+                    if (parent && parent.tagName === "DIV" && parent.classList.contains("content-preserve")) {
+                        let indentLevel = 0;
+                        let currentClass = parent.className;
+                        while (currentClass.includes(`indent-h${parseInt(currentClass.split('-')[1]) + 1}`)) {
+                            indentLevel++;
+                            currentClass = currentClass.replace(`indent-h${parseInt(currentClass.split('-')[1]) + 1}`, '');
+                        }
+                        container.style.marginLeft = `${indentLevel * 20}px`;
+                    }
+                });
+            }).catch(function (err) {
+                console.error(err.message);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMath();
+        });
+    </script>
+</body>
+</html>
+EOF
+
+# Check if the correct number of arguments is provided
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <filename>"
+    exit 1
+fi
+
+filename="$1"
+
+# Set input and output file names
+input_file="${filename}.txt"
+output_file="${filename}.html"
+
+# Detect whether the current session is Wayland or X11
+if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
+    # Wayland session
+    if ! command -v wl-copy &> /dev/null || ! command -v wl-paste &> /dev/null; then
+        echo "wl-clipboard is not installed. Please install it using your package manager."
+        exit 1
+    fi
+    clipboard_content=$(wl-paste)
+
+elif [ "$XDG_SESSION_TYPE" == "x11" ]; then
+    # X11 session
+    if ! command -v xclip &> /dev/null; then
+        echo "xclip is not installed. Please install it using your package manager."
+        exit 1
+    fi
+    clipboard_content=$(xclip -selection clipboard -o)
+
+else
+    echo "Unsupported session type: $XDG_SESSION_TYPE"
+    exit 1
+fi
+
+# Check if clipboard is empty
+if [ -z "$clipboard_content" ]; then
+    echo "Clipboard is empty."
+    exit 1
+fi
+
+# Write clipboard content to input file
+echo "$clipboard_content" > "$input_file"
+
+# Temporary file to store intermediate results
+temp_file=$(mktemp)
+
+# Extract title and clean up content
+title=$(head -n 1 "$input_file")
+title_words=$(echo "$title" | awk '{print $1, $2, $3}')
+tail -n +2 "$input_file" > "$temp_file"
+
+# Function to process math blocks
+process_math_blocks() {
+    awk '
+    BEGIN {
+        in_math = 0
+        math_content = ""
+        math_delim = ""
+    }
+
+    # Handle start of math blocks
+    /^(\$\$|\\\[)[ \t]*$/ {
+        if (!in_math) {
+            in_math = 1
+            math_delim = ($0 ~ /\$\$/) ? "$$" : "\\["
+            next
+        }
+    }
+
+    # Handle end of math blocks
+    /^(\$\$|\\\])[ \t]*$/ {
+        if (in_math) {
+            if (math_delim == "$$") {
+                printf "$$ %s $$\n", math_content
+            } else {
+                printf "\\[ %s \\]\n", math_content
+            }
+            math_content = ""
+            in_math = 0
+            next
+        }
+    }
+
+    # Handle content inside math blocks
+    {
+        if (in_math) {
+            gsub(/^[ \t]+|[ \t]+$/, "")  # Trim whitespace
+            if (math_content == "") {
+                math_content = $0
+            } else {
+                math_content = math_content " " $0
+            }
+        } else {
+            print $0
+        }
+    }
+
+    # Handle any unclosed math blocks at end of file
+    END {
+        if (in_math) {
+            if (math_delim == "$$") {
+                printf "$$ %s $$\n", math_content
+            } else {
+                printf "\\[ %s \\]\n", math_content
+            }
+        }
+    }' "$1" > "$2"
+}
+# Replace blank lines
+sed '/^$/s/^$/<br>/g' "$temp_file" > "${temp_file}_cleaned"
+
+# Process math blocks first
+process_math_blocks "${temp_file}_cleaned" "${temp_file}_math"
+
+# Process markdown elements
+sed -E '
+    s/^# (.*)$/<h1>\1<\/h1>/
+    s/^## (.*)$/<h2>\1<\/h2>/
+    s/^### (.*)$/<h3>\1<\/h3>/
+    s/^#### (.*)$/<h4>\1<\/h4>/
+' "${temp_file}_math" > "${temp_file}_processed"
+
+sed -E -i '
+    s/\*\*([^*]+)\*\*/<b>\1<\/b>/g;
+' "${temp_file}_processed"
+
+sed -E -i 's_(http[s]?://[^\s<]*)_<a href="\1">\1</a>_' "${temp_file}_processed"
+
+awk '
+BEGIN {
+    indent_class = "indent-h1"
+    in_code_block = 0
+    in_latex_block = 0
+}
+{
+    if ($0 ~ /^<h[1-4]>/) {
+        print $0
+    } else {
+        print "<div class=\"" indent_class " content-preserve\">" $0 "</div>"
+    }
+}' "${temp_file}_processed" > "${temp_file}_final"
+
+# Insert content into template
+sed -e "s/<!-- INSERT TITLE HERE -->/$title_words/" \
+    -e "s|<!-- INSERT H1 HERE -->|<h1>$title</h1>|" \
+    -e "/<!-- INSERT CONTENT HERE -->/ {
+        r ${temp_file}_final
+        d
+    }" template.html > "$output_file"
+
+# Clean up temporary files
+rm "$temp_file" "${temp_file}_cleaned" "${temp_file}_processed" "${temp_file}_final" template.html
+
+echo "HTML content has been successfully written to $output_file"
