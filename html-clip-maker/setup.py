@@ -22,11 +22,11 @@ setup(
     packages=find_packages(exclude=["tests*"]),
     include_package_data=True,
     package_data={
-        'html_clip_maker': ['templates/*.html'],
+        'html-clip-maker': ['templates/*.html'],
     },
     entry_points={
         'console_scripts': [
-            'html-clip-maker=html_clip_maker.main:main',
+            'html-clip-maker=html-clip-maker.main:main',
         ],
     },
     install_requires=[
